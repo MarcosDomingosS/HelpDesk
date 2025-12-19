@@ -1,4 +1,5 @@
 import { Router } from "express";
+import UsersRoutes from "./users.js";
 
 const Routes = Router();
 
@@ -9,5 +10,8 @@ Routes.get('/', (req, res) => {
         version: "1.0.0",
     });
 });
+
+
+Routes.use(UsersRoutes);
 
 export default Routes;
