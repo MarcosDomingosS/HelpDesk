@@ -14,7 +14,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>>{
     declare email: string;
     declare password: string;
     declare role: roles;
-    declare departament_id?: string;
+    declare department_id?: string;
 }
 
 User.init({
@@ -40,7 +40,7 @@ User.init({
         allowNull: false,
         defaultValue: roles.CLIENT,
     },
-    departament_id: {
+    department_id: {
         type: DataTypes.UUID,
         allowNull: true,
         references: {
