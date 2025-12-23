@@ -2,6 +2,7 @@ import express from 'express';
 import Routes from './routes/index.js';
 import database from './config/database.js';
 import 'dotenv/config'
+import "./models/associations.js";
 import cors from 'cors';
 
 const app = express();

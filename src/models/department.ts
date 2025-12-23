@@ -2,13 +2,13 @@ import { DataTypes, Model } from "sequelize";
 import type { InferAttributes, InferCreationAttributes, CreationOptional, } from 'sequelize';
 import database from "../config/database.js";
 
-class Departments extends Model<InferAttributes<Departments>, InferCreationAttributes<Departments>>{
+class Department extends Model<InferAttributes<Department>, InferCreationAttributes<Department>>{
     declare id: CreationOptional<string>;
     declare name: string;
     declare sla_minutes: number;
 }
 
-Departments.init({
+Department.init({
     id: {
         type: DataTypes.UUID,
         primaryKey: true,
@@ -29,6 +29,4 @@ Departments.init({
     updatedAt: false,
 });
 
-Departments.sync();
-
-export default Departments;
+export default Department;

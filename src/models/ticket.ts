@@ -15,7 +15,7 @@ export enum priority{
     HIGH = 'HIGH',
 }
 
-class Tickets extends Model<InferAttributes<Tickets>, InferCreationAttributes<Tickets>>{
+class Ticket extends Model<InferAttributes<Ticket>, InferCreationAttributes<Ticket>>{
     declare id: CreationOptional<string>;
     declare title: string;
     declare description?: string;
@@ -26,7 +26,7 @@ class Tickets extends Model<InferAttributes<Tickets>, InferCreationAttributes<Ti
     declare assigned_agent_id?: string;
 }
 
-Tickets.init({
+Ticket.init({
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -64,7 +64,7 @@ Tickets.init({
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: 'departaments',
+            model: 'departments',
             key: 'id',
         },
         onDelete: 'CASCADE',
@@ -85,6 +85,4 @@ Tickets.init({
     tableName: 'tickets',
 });
 
-Tickets.sync();
-
-export default Tickets;
+export default Ticket;

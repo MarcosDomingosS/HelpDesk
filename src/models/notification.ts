@@ -2,31 +2,21 @@ import { DataTypes, Model } from "sequelize";
 import type { InferAttributes, InferCreationAttributes, CreationOptional, } from 'sequelize';
 import database from "../config/database.js";
 
-class Messages extends Model<InferAttributes<Messages>, InferCreationAttributes<Messages>>{
+class Notification extends Model<InferAttributes<Notification>, InferCreationAttributes<Notification>>{
     declare id: CreationOptional<string>;
-    declare ticket_id: string;
-    declare sender_id: string;
-    declare message: string;
-    declare is_internal: boolean;
+    declare user_id: string;
+    declare type: string;
+    declare payload: object;
+    declare read_at: Date;
 }
 
-Messages.init({
+Notification.init({
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
-    ticket_id: {
-        type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'tickets',
-            key: 'id',
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    },
-    sender_id: {
+    user_id: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -36,21 +26,22 @@ Messages.init({
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     },
-    message: {
-        type: DataTypes.TEXT,
+    type: {
+        type: DataTypes.STRING,
         allowNull: false,
     },
-    is_internal: {
-        type: DataTypes.BOOLEAN,
+    payload: {
+        type: DataTypes.JSONB,
         allowNull: false,
     },
+    read_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    }
 }, {
     sequelize: database,
-    tableName: 'messages',
-    timestamps: true,
+    tableName: "notifications",
     updatedAt: false,
 });
 
-Messages.sync();
-
-export default Messages;
+export default Notification;

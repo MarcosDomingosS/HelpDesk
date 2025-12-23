@@ -8,15 +8,16 @@ export enum roles {
     CLIENT = 'CLIENT',
 }
 
-class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>>{
+class User extends Model<InferAttributes<User>, InferCreationAttributes<User>>{
     declare id: CreationOptional<string>;
     declare name: string;
     declare email: string;
     declare password: string;
     declare role: roles;
+    declare departament_id?: string;
 }
 
-Users.init({
+User.init({
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -39,10 +40,19 @@ Users.init({
         allowNull: false,
         defaultValue: roles.CLIENT,
     },
+    departament_id: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+            model: 'departments',
+            key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    }
 }, {
     sequelize: database,
     tableName: 'users',
 });
 
-Users.sync();
-export default Users;
+export default User;

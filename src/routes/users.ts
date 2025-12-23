@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Users from "../models/users.js";
+import Users from "../models/user.js";
 import UsersController from "../controllers/users.js";
 
 const Ctrl = new UsersController;

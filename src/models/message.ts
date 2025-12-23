@@ -2,15 +2,15 @@ import { DataTypes, Model } from "sequelize";
 import type { InferAttributes, InferCreationAttributes, CreationOptional, } from 'sequelize';
 import database from "../config/database.js";
 
-class SlaLogs extends Model<InferAttributes<SlaLogs>, InferCreationAttributes<SlaLogs>>{
+class Message extends Model<InferAttributes<Message>, InferCreationAttributes<Message>>{
     declare id: CreationOptional<string>;
     declare ticket_id: string;
-    declare started_at: Date;
-    declare resolved_at?: Date;
-    declare breached: boolean;
+    declare sender_id: string;
+    declare message: string;
+    declare is_internal: boolean;
 }
 
-SlaLogs.init({
+Message.init({
     id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
@@ -26,24 +26,29 @@ SlaLogs.init({
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     },
-    started_at: {
-        type: DataTypes.DATE,
+    sender_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: 'users',
+            key: 'id',
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    },
+    message: {
+        type: DataTypes.TEXT,
         allowNull: false,
     },
-    resolved_at: {
-        type: DataTypes.DATE,
-        allowNull: true,
-    },
-    breached: {
+    is_internal: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
     },
 }, {
     sequelize: database,
-    timestamps: false,
-    tableName: 'slalogs',
+    tableName: 'messages',
+    timestamps: true,
+    updatedAt: false,
 });
 
-SlaLogs.sync();
-
-export default SlaLogs;
+export default Message;

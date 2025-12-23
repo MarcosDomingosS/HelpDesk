@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Users, { roles } from "../models/users.js";
+import User, { roles } from "../models/user.js";
 import argon2 from "argon2";
 
 
@@ -8,7 +8,7 @@ class UsersController {
         try{
             const { name, email, password } = req.body;
             const hash = await argon2.hash(password);
-            const user = await Users.create({
+            const user = await User.create({
                 name: name,
                 email: email,
                 password: hash,
