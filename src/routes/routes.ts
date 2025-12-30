@@ -1,12 +1,10 @@
 import { Router } from "express";
-import UsersRoutes from "./users.js";
+import UsersRoutes from "./users.routes.js";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "../config/swegger.js";
+import AuthRoutes from "./auth.routes.js";
 
 const Routes = Router();
-
-
-
 
 Routes.get('/', (req, res) => {
     return res.status(200).json({
@@ -20,5 +18,6 @@ Routes.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 
 Routes.use(UsersRoutes);
+Routes.use(AuthRoutes);
 
 export default Routes;

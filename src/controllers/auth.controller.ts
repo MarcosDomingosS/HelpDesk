@@ -3,12 +3,13 @@ import jwt, { type SignOptions } from 'jsonwebtoken';
 import User, { roles } from "../models/user.js";
 import argon2 from "argon2";
 import { authConfig } from "../config/auth.js";
+import ApiResponse from "../utils/apiResponse.js";
 
 const options: SignOptions = {
   expiresIn: authConfig.expiresIn,
 }
 
-class UsersController {
+class AuthController {
     async login(req: Request, res: Response){
         try{
             const { email, password } = req.body;
@@ -16,10 +17,7 @@ class UsersController {
             const user = await User.findOne({where: { email }});
 
             if(!user){
-                return res.status(404).json({
-                    sucess: false,
-                    message: "Usuário não encontrado"
-                });
+                return ApiResponse.error(res, "Usuário não encontrado", 404);
             }
 
             const validPass = await argon2.verify(user.password, password);
@@ -37,24 +35,20 @@ class UsersController {
                 options
             );
 
-            return res.json({
-                sucess: true,
-                message: "Login realizado",
-                data: {
-                    token,
-                    user: {
-                        id: user.id,
-                        name: user.name,
-                        email: user.email,
-                    }
+            const data = {
+                token,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
                 }
-            })
+            };
+            
+            return ApiResponse.success(res, data, "Login realizado com sucesso", 200);
         }catch(error){
             console.error(error);
-            return res.status(500).json({
-                sucess: false,
-                message: "Erro interno.",
-            });
+            return ApiResponse.error;
         }
     }
 
@@ -69,19 +63,20 @@ class UsersController {
                 role: roles.CLIENT,
             });
 
-            return res.status(201).json({
-                sucess: true,
-                message: "Sucesso ao criar o usuário.",
-                data: user,
-            });
+            return ApiResponse.success(res, user, "Sucesso ao registrar o usuário", 201);
         }catch(error){
             console.error(error);
-            return res.status(500).json({
-                sucess: false,
-                message: "Erro interno.",
-            });
+            return ApiResponse.error;
         }
+    }
+
+    async me(req: Request, res: Response){
+        const data = {
+            user: res.locals.user,
+        }
+
+        return ApiResponse.success(res, data, "Acesso autorizado", 200);
     }
 }
 
-export default UsersController;
+export default AuthController;

@@ -1,5 +1,5 @@
 import express from 'express';
-import Routes from './routes/index.js';
+import Routes from './routes/routes.js';
 import database from './config/database.js';
 import 'dotenv/config'
 import "./models/associations.js";

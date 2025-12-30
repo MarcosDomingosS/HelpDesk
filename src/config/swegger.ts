@@ -13,6 +13,15 @@ export const swaggerOptions = {
         url: "http://localhost:7771",
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      }
+    }
   },
   apis: [
     "src/routes/**/*.ts",
