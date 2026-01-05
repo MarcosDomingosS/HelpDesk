@@ -1,76 +1,49 @@
 import { Request, Response } from "express";
-import jwt, { type SignOptions } from 'jsonwebtoken';
-import User, { roles } from "../models/user.js";
-import argon2 from "argon2";
-import { authConfig } from "../config/auth.js";
 import ApiResponse from "../utils/apiResponse.js";
-
-const options: SignOptions = {
-  expiresIn: authConfig.expiresIn,
-}
+import AuthService from "../services/auth.service.js";
+import { LoginDTO } from "../dtos/auth/login.dto.js";
+import { RegisterDTO } from "../dtos/auth/register.dto.js";
 
 class AuthController {
-    async login(req: Request, res: Response){
-        try{
-            const { email, password } = req.body;
 
-            const user = await User.findOne({where: { email }});
-
-            if(!user){
-                return ApiResponse.error(res, "Usuário não encontrado", 404);
+    async login(req: Request, res: Response) {
+        try {
+            const dto: LoginDTO = {
+                email: req.body.email,
+                password: req.body.password,
             }
 
-            const validPass = await argon2.verify(user.password, password);
+            const data = await AuthService.login(dto);    
 
-            if(!validPass){
-                return res.status(401).json({
-                    sucess: false,
-                    message: "Senha incorreta",
-                });
-            }
-
-            const token = jwt.sign(
-                { id: user.id, email: user.email, role: user.role },
-                authConfig.secret,
-                options
-            );
-
-            const data = {
-                token,
-                user: {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                }
-            };
-            
             return ApiResponse.success(res, data, "Login realizado com sucesso", 200);
-        }catch(error){
+        } catch (error: any) {
+            if(error.message === "USER_NOT_FOUND"){
+                return ApiResponse.error(res, "Usuário não encontrado", 404)
+            }
+
+            if(error.message === "INVALID_PASSWORD"){
+                return ApiResponse.error(res, "Senha incorreta", 401)
+            }
+
+
             console.error(error);
             return ApiResponse.error;
         }
     }
 
-    async register(req: Request, res: Response){
-        try{
-            const { name, email, password } = req.body;
-            const hash = await argon2.hash(password);
-            const user = await User.create({
-                name: name,
-                email: email,
-                password: hash,
-                role: roles.CLIENT,
-            });
+    async register(req: Request, res: Response) {
+        try {
+            const dto: RegisterDTO = req.body;
+            const user = AuthService.register(dto);
 
             return ApiResponse.success(res, user, "Sucesso ao registrar o usuário", 201);
-        }catch(error){
+        } catch (error) {
             console.error(error);
             return ApiResponse.error;
         }
     }
 
-    async me(req: Request, res: Response){
+    async me(req: Request, res: Response) {
         const data = {
             user: res.locals.user,
         }

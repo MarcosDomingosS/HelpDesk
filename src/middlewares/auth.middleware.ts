@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import { authConfig } from "../config/auth.js";
 import type { Request, Response, NextFunction } from "express";
+import { roles } from "../models/user.js";
 
 interface TokenPayload {
   id: string;
   email: string;
+  role: roles;
 }
 
 export default function AuthMiddleware(req: Request, res: Response, next: NextFunction){
@@ -31,6 +33,7 @@ export default function AuthMiddleware(req: Request, res: Response, next: NextFu
         res.locals.user = {
             id: decoded.id,
             email: decoded.email,
+            role: decoded.role,
         };
 
         next();

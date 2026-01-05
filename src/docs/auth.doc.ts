@@ -122,7 +122,7 @@
  *                       properties:
  *                         id:
  *                           type: number
- *                           example: 1
+ *                           example: uuid
  *                         email:
  *                           type: string
  *                           example: usuario@email.com

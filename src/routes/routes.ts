@@ -1,7 +1,7 @@
 import { Router } from "express";
 import UsersRoutes from "./users.routes.js";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "../config/swegger.js";
+import { swaggerSpec } from "../config/swagger.js";
 import AuthRoutes from "./auth.routes.js";
 
 const Routes = Router();
