@@ -1,8 +1,9 @@
 import { CreateUserDTO } from "../dtos/user/createUser.dto.js";
 import argon2 from "argon2";
-import User, { roles } from "../models/user.js";
+import { roles } from "../models/user.js";
 import { UserResponseDTO } from "../dtos/user/userResponse.dto.js";
 import { EditUserDTO } from "../dtos/user/editUser.dto.js";
+import UserRepository from "../repositories/user.repo.js";
 
 
 export default class UserService{
@@ -10,7 +11,7 @@ export default class UserService{
         const { name, password, email, role, department_id } = dto;
         const hash = await argon2.hash(password);
 
-        const user = await User.create({
+        const user = await UserRepository.create({
             name: name,
             email: email,
             password: hash,
@@ -28,7 +29,7 @@ export default class UserService{
     }
 
     static async index(): Promise<UserResponseDTO[]>{
-        const users = await User.findAll();
+        const users = await UserRepository.findAll();
 
         const responseDTO: UserResponseDTO[] = users.map(user => ({
             id: user.id,
@@ -42,18 +43,19 @@ export default class UserService{
     }
 
     static async update(dto: EditUserDTO): Promise<UserResponseDTO>{
-        const user = await User.findByPk(dto.id);
+        const user = await UserRepository.findById(dto.id);
 
         if(!user){
             throw new Error("USER_NOT_FOUND");
         }
 
-        const data = await user.update({
+        const data = await UserRepository.update(user, {
             ...(dto.name && { name: dto.name }),
             ...(dto.email && { email: dto.email }),
             ...(dto.role && { role: dto.role }),
             ...(dto.department_id && { department_id: dto.department_id }),
         });
+
         const responseDTO: UserResponseDTO = {
             id: data.id,
             name: data.name,
@@ -66,13 +68,13 @@ export default class UserService{
     }
 
     static async delete(id: string){
-        const user = await User.findByPk(id);
+        const user = await UserRepository.findById(id);
 
         if(!user){
             throw new Error("USER_NOT_FOUND");
         }
 
-        await user.destroy();
+        await UserRepository.destroy(user);
 
         return;
     }

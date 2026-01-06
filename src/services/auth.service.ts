@@ -1,4 +1,3 @@
-import User from "../models/user.js";
 import argon2 from "argon2";
 import { roles } from "../models/user.js";
 import { LoginDTO } from "../dtos/auth/login.dto.js";
@@ -6,6 +5,7 @@ import jwt, { type SignOptions } from 'jsonwebtoken';
 import { authConfig } from "../config/auth.js";
 import { LoginResponseDTO } from "../dtos/auth/loginResponse.dto.js";
 import { RegisterDTO } from "../dtos/auth/register.dto.js";
+import UserRepository from "../repositories/user.repo.js";
 
 const options: SignOptions = {
     expiresIn: authConfig.expiresIn,
@@ -15,7 +15,7 @@ export default class AuthService{
     static async login(dto: LoginDTO): Promise<LoginResponseDTO>{
         const { email, password } = dto;
 
-        const user = await User.findOne({ where: { email } });
+        const user = await UserRepository.findByEmail(email);
 
         if(!user){
             throw new Error("USER_NOT_FOUND");
@@ -49,7 +49,7 @@ export default class AuthService{
     static async register(dto: RegisterDTO){
         const { name, email, password } = dto;
         const hash = await argon2.hash(password);
-        const user = await User.create({
+        const user = await UserRepository.create({
             name: name,
             email: email,
             password: hash,

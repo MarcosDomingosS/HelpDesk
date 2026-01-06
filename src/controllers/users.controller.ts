@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import User, { roles } from "../models/user.js";
-import argon2 from "argon2";
 import ApiResponse from "../utils/apiResponse.js";
 import UserService from "../services/user.service.js";
 import { EditUserDTO } from "../dtos/user/editUser.dto.js";
