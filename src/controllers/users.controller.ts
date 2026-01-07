@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import ApiResponse from "../utils/apiResponse.js";
 import UserService from "../services/user.service.js";
 import { EditUserDTO } from "../dtos/user/editUser.dto.js";
+import { CreateUserDTO } from "../dtos/user/createUser.dto.js";
 
 class UsersController {
     async store(req: Request, res: Response){
         try{
-            const dto = {
+            const dto: CreateUserDTO = {
                 name: req.body.name,
                 email: req.body.email,
                 password: req.body.password,

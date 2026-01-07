@@ -2,12 +2,13 @@ import { DataTypes, Model } from "sequelize";
 import type { InferAttributes, InferCreationAttributes, CreationOptional, } from 'sequelize';
 import database from "../config/database.js";
 
-class Message extends Model<InferAttributes<Message>, InferCreationAttributes<Message>>{
+class Message extends Model<InferAttributes<Message, {omit: "created_at"}>, InferCreationAttributes<Message>>{
     declare id: CreationOptional<string>;
     declare ticket_id: string;
     declare sender_id: string;
     declare message: string;
     declare is_internal: boolean;
+    declare created_at: CreationOptional<Date>;
 }
 
 Message.init({
@@ -49,6 +50,7 @@ Message.init({
     tableName: 'messages',
     timestamps: true,
     updatedAt: false,
+    createdAt: "created_at",
 });
 
 export default Message;

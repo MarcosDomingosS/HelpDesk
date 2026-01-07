@@ -2,10 +2,11 @@ import { DataTypes, Model } from "sequelize";
 import type { InferAttributes, InferCreationAttributes, CreationOptional, } from 'sequelize';
 import database from "../config/database.js";
 
-class Department extends Model<InferAttributes<Department>, InferCreationAttributes<Department>>{
+class Department extends Model<InferAttributes<Department, {omit: "created_at"}>, InferCreationAttributes<Department>>{
     declare id: CreationOptional<string>;
     declare name: string;
     declare sla_minutes: number;
+    declare created_at: CreationOptional<Date>;
 }
 
 Department.init({
@@ -27,6 +28,7 @@ Department.init({
     sequelize: database,
     timestamps: true,
     updatedAt: false,
+    createdAt: "created_at",
 });
 
 export default Department;

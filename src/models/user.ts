@@ -53,6 +53,8 @@ User.init({
 }, {
     sequelize: database,
     tableName: 'users',
+    createdAt: "created_at",
+    updatedAt: "updated_at",
 });
 
 export default User;

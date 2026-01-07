@@ -67,7 +67,7 @@ export default class UserService{
         return responseDTO;
     }
 
-    static async delete(id: string){
+    static async delete(id: string): Promise<void>{
         const user = await UserRepository.findById(id);
 
         if(!user){

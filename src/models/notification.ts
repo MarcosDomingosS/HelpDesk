@@ -42,6 +42,7 @@ Notification.init({
     sequelize: database,
     tableName: "notifications",
     updatedAt: false,
+    createdAt: "created_at",
 });
 
 export default Notification;
