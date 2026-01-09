@@ -15,7 +15,7 @@ export enum priority{
     HIGH = 'HIGH',
 }
 
-class Ticket extends Model<InferAttributes<Ticket>, InferCreationAttributes<Ticket>>{
+class Ticket extends Model<InferAttributes<Ticket, {omit: "created_at" | "updated_at"}>, InferCreationAttributes<Ticket>>{
     declare id: CreationOptional<string>;
     declare title: string;
     declare description?: string;
@@ -24,6 +24,8 @@ class Ticket extends Model<InferAttributes<Ticket>, InferCreationAttributes<Tick
     declare user_id: string;
     declare department_id: string;
     declare assigned_agent_id?: string;
+    declare created_at: CreationOptional<Date>;
+    declare updated_at: CreationOptional<Date>;
 }
 
 Ticket.init({

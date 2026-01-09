@@ -1,9 +1,10 @@
 import { Router } from "express";
-import UsersRoutes from "./users.routes.js";
+import UserRoutes from "./user.routes.js";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "../config/swagger.js";
 import AuthRoutes from "./auth.routes.js";
 import DepartmentRoutes from "./department.routes.js";
+import TicketRoutes from "./ticket.routes.js";
 
 const Routes = Router();
 
@@ -17,8 +18,9 @@ Routes.get('/', (req, res) => {
 
 Routes.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-Routes.use(UsersRoutes);
+Routes.use(UserRoutes);
 Routes.use(AuthRoutes);
 Routes.use(DepartmentRoutes);
+Routes.use(TicketRoutes);
 
 export default Routes;

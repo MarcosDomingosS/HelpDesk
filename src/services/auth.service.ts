@@ -11,8 +11,8 @@ const options: SignOptions = {
     expiresIn: authConfig.expiresIn,
 }
 
-export default class AuthService{
-    static async login(dto: LoginDTO): Promise<LoginResponseDTO>{
+class AuthService{
+    async login(dto: LoginDTO): Promise<LoginResponseDTO>{
         const { email, password } = dto;
 
         const user = await UserRepository.findByEmail(email);
@@ -28,7 +28,15 @@ export default class AuthService{
         }
 
         const token = jwt.sign(
-            { id: user.id, email: user.email, role: user.role },
+            { 
+                id: user.id, 
+                name: user.name, 
+                email: user.email, 
+                role: user.role,
+                ...(user.department_id && { departmentId: user.department_id }),
+                createdAt: user.created_at,
+                updatedAt: user.updated_at
+            },
             authConfig.secret,
             options
         );
@@ -40,13 +48,14 @@ export default class AuthService{
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                ...(user.department_id && { departmentId: user.department_id }),
             }
         };
 
         return data;
     }
 
-    static async register(dto: RegisterDTO){
+    async register(dto: RegisterDTO){
         const { name, email, password } = dto;
         const hash = await argon2.hash(password);
         const user = await UserRepository.create({
@@ -59,3 +68,5 @@ export default class AuthService{
         return user;
     }
 }
+
+export default new AuthService();

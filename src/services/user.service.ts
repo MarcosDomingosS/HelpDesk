@@ -6,8 +6,8 @@ import { EditUserDTO } from "../dtos/user/editUser.dto.js";
 import UserRepository from "../repositories/user.repo.js";
 
 
-export default class UserService{
-    static async create(dto: CreateUserDTO): Promise<UserResponseDTO> {
+class UserService{
+    async create(dto: CreateUserDTO): Promise<UserResponseDTO> {
         const { name, password, email, role, department_id } = dto;
         const hash = await argon2.hash(password);
 
@@ -28,7 +28,7 @@ export default class UserService{
         return responseDTO;
     }
 
-    static async index(): Promise<UserResponseDTO[]>{
+    async index(): Promise<UserResponseDTO[]>{
         const users = await UserRepository.findAll();
 
         const responseDTO: UserResponseDTO[] = users.map(user => ({
@@ -42,7 +42,7 @@ export default class UserService{
         return responseDTO;
     }
 
-    static async update(dto: EditUserDTO): Promise<UserResponseDTO>{
+    async update(dto: EditUserDTO): Promise<UserResponseDTO>{
         const user = await UserRepository.findById(dto.id);
 
         if(!user){
@@ -67,7 +67,7 @@ export default class UserService{
         return responseDTO;
     }
 
-    static async delete(id: string): Promise<void>{
+    async delete(id: string): Promise<void>{
         const user = await UserRepository.findById(id);
 
         if(!user){
@@ -79,3 +79,5 @@ export default class UserService{
         return;
     }
 }
+
+export default new UserService();

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import ApiResponse from "../utils/apiResponse.js";
-import AuthService from "../services/auth.service.js";
+import authService from "../services/auth.service.js";
 import { LoginDTO } from "../dtos/auth/login.dto.js";
 import { RegisterDTO } from "../dtos/auth/register.dto.js";
 
@@ -13,7 +13,7 @@ class AuthController {
                 password: req.body.password,
             }
 
-            const data = await AuthService.login(dto);    
+            const data = await authService.login(dto);    
 
             return ApiResponse.success(res, data, "Login realizado com sucesso", 200);
         } catch (error: any) {
@@ -34,7 +34,7 @@ class AuthController {
     async register(req: Request, res: Response) {
         try {
             const dto: RegisterDTO = req.body;
-            const user = AuthService.register(dto);
+            const user = authService.register(dto);
 
             return ApiResponse.success(res, user, "Sucesso ao registrar o usuário", 201);
         } catch (error) {
@@ -52,4 +52,4 @@ class AuthController {
     }
 }
 
-export default AuthController;
+export default new AuthController();

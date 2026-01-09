@@ -5,8 +5,12 @@ import { roles } from "../models/user.js";
 
 interface TokenPayload {
   id: string;
+  name: string;
   email: string;
   role: roles;
+  departmentId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export default function AuthMiddleware(req: Request, res: Response, next: NextFunction){
@@ -32,8 +36,12 @@ export default function AuthMiddleware(req: Request, res: Response, next: NextFu
 
         res.locals.user = {
             id: decoded.id,
+            name: decoded.name,
             email: decoded.email,
             role: decoded.role,
+            departmentId: decoded.departmentId,
+            createdAt: decoded.createdAt,
+            updatedAt: decoded.updatedAt,
         };
 
         next();

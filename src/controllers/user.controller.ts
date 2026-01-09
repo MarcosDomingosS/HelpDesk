@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import ApiResponse from "../utils/apiResponse.js";
-import UserService from "../services/user.service.js";
 import { EditUserDTO } from "../dtos/user/editUser.dto.js";
 import { CreateUserDTO } from "../dtos/user/createUser.dto.js";
+import userService from "../services/user.service.js";
 
-class UsersController {
+class UserController {
     async store(req: Request, res: Response){
         try{
             const dto: CreateUserDTO = {
@@ -15,7 +15,7 @@ class UsersController {
                 department_id: req.body.department_id,
             }
             
-            const user = await UserService.create(dto);
+            const user = await userService.create(dto);
 
             return ApiResponse.success(res, user, "Sucesso ao criar o usuário", 201);
         }catch(error){
@@ -26,7 +26,7 @@ class UsersController {
 
     async index(req: Request, res: Response){
         try{
-            const users = await UserService.index();
+            const users = await userService.index();
 
             return ApiResponse.success(res, users, "Sucesso ao enviar os usuários", 200);
         }catch(error){
@@ -53,7 +53,7 @@ class UsersController {
                 department_id: department_id,
             }
 
-            const user = await UserService.update(dto);
+            const user = await userService.update(dto);
 
             return ApiResponse.success(res, user, "Sucesso ao editar o usuário", 200);
         }catch(error){
@@ -71,7 +71,7 @@ class UsersController {
                 return ApiResponse.error(res, "ID do usuário não informado", 400);
             }
 
-            UserService.delete(id);
+            userService.delete(id);
 
             return res.status(204).send();
         }catch(error: any){
@@ -86,4 +86,4 @@ class UsersController {
     }
 }
 
-export default UsersController;
+export default new UserController();

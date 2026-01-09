@@ -7,5 +7,6 @@ export interface LoginResponseDTO{
         name: string;
         email: string;
         role: roles;
+        departmentId?: string;
     };
 }

@@ -8,13 +8,15 @@ export enum roles {
     CLIENT = 'CLIENT',
 }
 
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>>{
+class User extends Model<InferAttributes<User, {omit: 'created_at'|'updated_at'}>, InferCreationAttributes<User>>{
     declare id: CreationOptional<string>;
     declare name: string;
     declare email: string;
     declare password: string;
     declare role: roles;
     declare department_id?: string;
+    declare created_at: Date;
+    declare updated_at: Date;
 }
 
 User.init({
