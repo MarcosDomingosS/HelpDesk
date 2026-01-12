@@ -6,6 +6,8 @@ import { authConfig } from "../config/auth.js";
 import { LoginResponseDTO } from "../dtos/auth/loginResponse.dto.js";
 import { RegisterDTO } from "../dtos/auth/register.dto.js";
 import UserRepository from "../repositories/user.repo.js";
+import { NotFoundError } from "../errors/NotFoundError.js";
+import { UnauthorizedError } from "../errors/UnauthorizedError.js";
 
 const options: SignOptions = {
     expiresIn: authConfig.expiresIn,
@@ -18,13 +20,13 @@ class AuthService{
         const user = await UserRepository.findByEmail(email);
 
         if(!user){
-            throw new Error("USER_NOT_FOUND");
+            throw new NotFoundError("Usuário não encontrado");
         }
 
         const validPass = await argon2.verify(user.password, password);
 
         if(!validPass){
-            throw new Error("INVALID_PASSWORD")
+            throw new UnauthorizedError("Credenciais inválidas")
         }
 
         const token = jwt.sign(

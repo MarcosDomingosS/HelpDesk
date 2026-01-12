@@ -7,40 +7,21 @@ import { RegisterDTO } from "../dtos/auth/register.dto.js";
 class AuthController {
 
     async login(req: Request, res: Response) {
-        try {
-            const dto: LoginDTO = {
-                email: req.body.email,
-                password: req.body.password,
-            }
-
-            const data = await authService.login(dto);    
-
-            return ApiResponse.success(res, data, "Login realizado com sucesso", 200);
-        } catch (error: any) {
-            if(error.message === "USER_NOT_FOUND"){
-                return ApiResponse.error(res, "Usuário não encontrado", 404)
-            }
-
-            if(error.message === "INVALID_PASSWORD"){
-                return ApiResponse.error(res, "Senha incorreta", 401)
-            }
-
-
-            console.error(error);
-            return ApiResponse.error;
+        const dto: LoginDTO = {
+            email: req.body.email,
+            password: req.body.password,
         }
+
+        const data = await authService.login(dto);    
+
+        return ApiResponse.success(res, data, "Login realizado com sucesso", 200);
     }
 
     async register(req: Request, res: Response) {
-        try {
-            const dto: RegisterDTO = req.body;
-            const user = authService.register(dto);
+        const dto: RegisterDTO = req.body;
+        const user = authService.register(dto);
 
-            return ApiResponse.success(res, user, "Sucesso ao registrar o usuário", 201);
-        } catch (error) {
-            console.error(error);
-            return ApiResponse.error;
-        }
+        return ApiResponse.success(res, user, "Sucesso ao registrar o usuário", 201);
     }
 
     async me(req: Request, res: Response) {

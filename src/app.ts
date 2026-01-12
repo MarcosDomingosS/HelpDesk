@@ -4,12 +4,15 @@ import database from './config/database.js';
 import 'dotenv/config'
 import "./models/associations.js";
 import cors from 'cors';
+import { ErrorMiddleware } from './middlewares/error.middleware.js';
 
 const app = express();
 // app.use(cors());
 app.use(express.json());
 
 app.use(Routes);
+
+app.use(ErrorMiddleware);
 
 database.authenticate()
     .then(()=>{
