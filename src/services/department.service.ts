@@ -1,9 +1,10 @@
 import departmentRepo from "../repositories/department.repo.js";
 import { DepartmentResponseDTO } from "../dtos/department/departmentResponse.dto.js";
 import { CreateDepartmentDTO } from "../dtos/department/createDepartment.dto.js";
+import { NotFoundError } from "../errors/NotFoundError.js";
 
 class DepartmentService{
-    async index(){
+    async index(): Promise<DepartmentResponseDTO[]>{
         const departments = await departmentRepo.findAll();
 
         const response: DepartmentResponseDTO[] = departments.map(department => ({
@@ -38,7 +39,7 @@ class DepartmentService{
         const department = await departmentRepo.findById(id);
 
         if(!department){
-            throw new Error("DEPARTMENT_NOT_FOUND");
+            throw new NotFoundError("Departamento não encontrado");
         }
 
         await departmentRepo.destroy(department);

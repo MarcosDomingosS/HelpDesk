@@ -3,6 +3,8 @@ import { AssignTicketDTO } from "../dtos/ticket/assignTicket.dto.js";
 import { CreateTicketDTO } from "../dtos/ticket/createTicket.dto.js";
 import { TicketResponseDTO } from "../dtos/ticket/ticketResponse.dto.js";
 import { UpdateTicketStatusDTO } from "../dtos/ticket/updateTicketStatus.dto.js";
+import { ApiError } from "../errors/ApiError.js";
+import { NotFoundError } from "../errors/NotFoundError.js";
 import { status } from "../models/ticket.js";
 import User from "../models/user.js";
 import { TicketPolicy } from "../policies/ticket.policy.js";
@@ -11,7 +13,7 @@ import ticketRepo from "../repositories/ticket.repo.js";
 class TicketService{
     async create(dto: CreateTicketDTO, user: AuthMiddlewareResponseDTO): Promise<TicketResponseDTO>{
         if(!TicketPolicy.canCreate(user)){
-            throw new Error("ONLY_CLIENT_CAN_CREATE_TICKET");
+            throw new ApiError("Só clientes podem criar tickets", 403);
         }
 
         const { title,  description, priority, departmentId } = dto;
@@ -44,17 +46,17 @@ class TicketService{
         const { ticketId, user } = dto;
 
         if(!TicketPolicy.canAssign(user)){
-            throw new Error("ONLY_AGENT_CAN_CREATE_TICKET");
+            throw new ApiError("Só agentes podem assumir tickets", 403);
         }
 
         const ticket = await ticketRepo.findById(ticketId);
 
         if(!ticket){
-            throw new Error("TICKET_NOT_FOUND");
+            throw new NotFoundError("Ticket não encontrado");
         }
 
         if(TicketPolicy.isAssigned(ticket)){
-            throw new Error("TICKET_HAS_ALREADY_BEEN_ASSIGNED");
+            throw new ApiError("Ticket já assumido por um agente", 403);
         }
 
         const data = await ticketRepo.update(ticket, {
@@ -84,11 +86,11 @@ class TicketService{
         const ticket = await ticketRepo.findById(ticketId);
 
         if(!ticket){
-            throw new Error("TICKET_NOT_FOUND");
+            throw new NotFoundError("Ticket não encontrado");
         }
 
         if(!TicketPolicy.canUpdateStatus(user, ticket)){
-            throw new Error("ONLY_ASSIGNED_AGENT_CAN_UPDATE_TICKET_STATUS");
+            throw new ApiError("Só agentes que assumiram o ticket podem editar o status", 403);
         }
 
         const data = await ticketRepo.update(ticket, {

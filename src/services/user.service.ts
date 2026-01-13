@@ -4,6 +4,7 @@ import { roles } from "../models/user.js";
 import { UserResponseDTO } from "../dtos/user/userResponse.dto.js";
 import { EditUserDTO } from "../dtos/user/editUser.dto.js";
 import UserRepository from "../repositories/user.repo.js";
+import { NotFoundError } from "../errors/NotFoundError.js";
 
 
 class UserService{
@@ -18,20 +19,20 @@ class UserService{
             role: role ?? roles.CLIENT,
             ...(department_id && { department_id })
         });
-        const responseDTO: UserResponseDTO = {
+        const response: UserResponseDTO = {
             id: user.id,
             name: user.name,
             email: user.email,
             role: user.role,
             ...(user.department_id && { department_id: user.department_id })
         } 
-        return responseDTO;
+        return response;
     }
 
     async index(): Promise<UserResponseDTO[]>{
         const users = await UserRepository.findAll();
 
-        const responseDTO: UserResponseDTO[] = users.map(user => ({
+        const response: UserResponseDTO[] = users.map(user => ({
             id: user.id,
             name: user.name,
             email: user.email,
@@ -39,14 +40,14 @@ class UserService{
             ...(user.department_id && { department_id: user.department_id })
         }));
 
-        return responseDTO;
+        return response;
     }
 
     async update(dto: EditUserDTO): Promise<UserResponseDTO>{
         const user = await UserRepository.findById(dto.id);
 
         if(!user){
-            throw new Error("USER_NOT_FOUND");
+            throw new NotFoundError("Usuário não encontrado");
         }
 
         const data = await UserRepository.update(user, {
@@ -56,7 +57,7 @@ class UserService{
             ...(dto.department_id && { department_id: dto.department_id }),
         });
 
-        const responseDTO: UserResponseDTO = {
+        const response: UserResponseDTO = {
             id: data.id,
             name: data.name,
             email: data.email,
@@ -64,7 +65,7 @@ class UserService{
             ...(data.department_id && { department_id: data.department_id })
         };
 
-        return responseDTO;
+        return response;
     }
 
     async delete(id: string): Promise<void>{
